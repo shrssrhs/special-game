@@ -1,0 +1,65 @@
+{% extends "arg/base.html" %}
+{% block title %}{{ case.id }} // Z.A.R.D. ARCHIVE{% endblock %}
+
+{% block content %}
+
+<div class="case-header">
+    <div class="case-back"><a href="/archive/">← Архив</a></div>
+    <div class="case-meta-line">
+        <span class="case-num">ДЕЛО № {{ case.id }}</span>
+        <span class="case-sep">//</span>
+        <span class="case-date-label">{{ case.date|default:"ДАТА ИЗЪЯТА" }}</span>
+        <span class="case-sep">//</span>
+        <span class="case-status-label status-{{ case.status_cls }}">{{ case.status }}</span>
+    </div>
+</div>
+
+<h1>{{ case.title }}</h1>
+<hr class="divider">
+
+<div class="case-body">
+    {{ case.content|safe }}
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+.case-back {
+    margin-bottom: 1.5rem;
+}
+.case-back a {
+    font-family: var(--tech);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    color: var(--dim);
+}
+.case-back a:hover { color: var(--link); text-decoration: none; }
+
+.case-meta-line {
+    font-family: var(--tech);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.case-num   { color: var(--accent); }
+.case-sep   { color: var(--border); }
+.status-closed   { color: var(--dim); }
+.status-redacted { color: var(--accent); }
+.status-pending  { color: #7a6a2a; }
+
+.case-body {
+    font-family: var(--serif);
+    font-size: 1rem;
+    line-height: 1.85;
+}
+
+.case-body p     { margin-bottom: 1.1rem; }
+.case-body ul    { margin-bottom: 1.1rem; }
+.case-body em    { color: var(--dim); font-style: italic; }
+{% endblock %}

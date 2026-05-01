@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERMINAL // {{ page.title }}</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #0a0a0a;
+            color: #c8c8c8;
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 16px;
+            transition: background 0.5s ease;
+            overflow-x: hidden;
+        }
+
+        /* Сканирующая линия для атмосферы */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 200;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        .terminal {
+            width: 100%;
+            max-width: 760px;
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0,255,100,0.05);
+            background: #0a0a0a;
+            position: relative;
+            z-index: 10;
+        }
+
+        .terminal-bar {
+            background: #1a1a1a;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot.red   { background: #ff5f57; }
+        .dot.yellow{ background: #ffbd2e; }
+        .dot.green { background: #28c941; }
+
+        .terminal-title {
+            margin-left: 8px;
+            font-size: 11px;
+            color: #555;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            flex-grow: 1;
+        }
+
+        .terminal-body { padding: 32px; line-height: 1.8; }
+
+        h1 {
+            color: #4ade80;
+            font-size: 18px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #1e3a2e;
+            padding-bottom: 12px;
+        }
+
+        /* Механика: Скрытый текст (черный на черном) */
+        .hidden-text {
+            color: #0a0a0a; /* Полностью совпадает с фоном */
+            transition: color 0.1s;
+        }
+        /* При выделении браузер подсветит его инверсией или фоном выделения */
+
+        .content { font-size: 15px; color: #b0b0b0; }
+        .content p { margin-bottom: 16px; }
+        .content em { color: #4ade80; font-style: normal; }
+
+        .hint {
+            margin-top: 32px;
+            padding: 16px;
+            border-left: 2px solid #1e3a2e;
+            color: #3d6b4f;
+            font-size: 13px;
+        }
+
+        /* Глич для состояния "Оно рядом" */
+        .glitch-mode h1 { color: #ff5f57 !important; border-bottom-color: #5a1a1a !important; }
+        .glitch-mode .terminal { border-color: #5a1a1a; box-shadow: 0 0 40px rgba(255,0,0,0.1); }
+
+        .red-alert {
+            display: none;
+            color: #ff5f57;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+            animation: blink 0.5s infinite;
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+
+<div class="terminal" id="terminal-window">
+    <div class="terminal-bar">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+        <span class="terminal-title">STATION_ZATELAND // {{ page.slug|upper }}</span>
+        <span id="live-timer" style="font-size: 10px; color: #333;"></span>
+    </div>
+    <div class="terminal-body">
+        <h1 id="doc-title">{{ page.title }}</h1>
+
+        <div class="content" id="doc-content">
+            {{ page.content|safe }}
+        </div>
+
+        {% if page.visible_hint %}
+        <div class="hint">{{ page.visible_hint }}</div>
+        {% endif %}
+
+        <div class="stamp">ID: {{ request.session.session_key|slice:":8" }} // LOC: {{ request.META.REMOTE_ADDR }}</div>
+    </div>
+</div>
+
+<div id="alert" class="red-alert">ПРЕДУПРЕЖДЕНИЕ: НЕСАНКЦИОНИРОВАННОЕ КОПИРОВАНИЕ ЛИЧНОСТИ</div>
+
+<script>
+    // 1. Таймер в реальном времени
+    const timerBox = document.getElementById('live-timer');
+    setInterval(() => {
+        const now = new Date();
+        timerBox.innerText = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}:${now.getMilliseconds()}`;
+    }, 50);
+
+    // 2. Механика бездействия (The Mimic is learning)
+    let idleTime = 0;
+    const terminal = document.body;
+    const alertMsg = document.getElementById('alert');
+
+    document.onmousemove = () => {
+        if (idleTime >= 30) {
+            // Резкий возврат в норму при движении
+            terminal.classList.remove('glitch-mode');
+            alertMsg.style.display = 'none';
+        }
+        idleTime = 0;
+    };
+
+    setInterval(() => {
+        idleTime++;
+        if (idleTime === 15) {
+            console.log("Something is watching your session...");
+        }
+        if (idleTime >= 30) {
+            terminal.classList.add('glitch-mode');
+            alertMsg.style.display = 'block';
+            // Можно добавить тихий звук помех, если есть аудиофайл
+        }
+    }, 1000);
+
+    // 3. Консольный сюрприз
+    console.log("%cZATELAND SECURITY PROTOCOL", "color: #4ade80; font-weight: bold; font-size: 16px;");
+    console.log("User IP: {{ request.META.REMOTE_ADDR }} - LOGGED");
+</script>
+
+</body>
+</html>

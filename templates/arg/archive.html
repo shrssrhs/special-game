@@ -1,0 +1,92 @@
+{% extends "arg/base.html" %}
+{% block title %}ARCHIVE // Z.A.R.D.{% endblock %}
+
+{% block content %}
+
+<!--
+  /shadow/14-04
+  пароль не печатается. он печатает себя.
+-->
+
+<h1>// Публичный архив — дела</h1>
+
+<p class="arch-note">Отображены записи с грифом публичного доступа. Остальные материалы находятся на рассмотрении или изъяты из оборота.</p>
+
+<hr class="divider">
+
+<table class="case-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Дата</th>
+            <th>Статус</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for case in cases %}
+        <tr>
+            <td class="case-id">
+                <a href="/archive/{{ case.id }}/">{{ case.id }}</a>
+            </td>
+            <td class="case-title">
+                <a href="/archive/{{ case.id }}/">{{ case.title }}</a>
+            </td>
+            <td class="case-date">{{ case.date|default:"дата изъята" }}</td>
+            <td class="case-status status-{{ case.status_cls }}">{{ case.status }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+
+{% block extra_css %}
+.arch-note {
+    font-family: var(--tech);
+    font-size: 0.7rem;
+    color: var(--dim);
+    letter-spacing: 0.04em;
+    margin-bottom: 0;
+}
+
+.case-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+}
+
+.case-table th {
+    text-align: left;
+    padding: 0.5rem 1rem 0.5rem 0;
+    color: var(--dead);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+}
+
+.case-table td {
+    padding: 0.55rem 1rem 0.55rem 0;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+
+.case-table tr:hover td { background: rgba(255,255,255,0.015); }
+
+.case-id a, .case-title a {
+    color: var(--link);
+    text-decoration: none;
+}
+.case-id a:hover, .case-title a:hover { text-decoration: underline; }
+
+.case-date { color: var(--dim); white-space: nowrap; }
+
+.case-status { white-space: nowrap; }
+.status-closed  { color: var(--dim); }
+.status-redacted{ color: var(--accent); }
+.status-pending { color: #7a6a2a; }
+{% endblock %}

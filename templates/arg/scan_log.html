@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARG — Лог сканирований</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #0f0f0f;
+            color: #c8c8c8;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 32px 16px;
+        }
+
+        h1 {
+            color: #4ade80;
+            font-size: 16px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+            border-bottom: 1px solid #1e3a2e;
+            padding-bottom: 12px;
+        }
+
+        h2 {
+            color: #888;
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 32px 0 12px;
+        }
+
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: #161616;
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            padding: 16px 20px;
+            min-width: 200px;
+        }
+
+        .card .label {
+            font-size: 11px;
+            color: #444;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .card .slug {
+            color: #4ade80;
+            font-size: 14px;
+        }
+
+        .card .num {
+            font-size: 28px;
+            color: #e0e0e0;
+            font-weight: bold;
+        }
+
+        .card .sub {
+            font-size: 11px;
+            color: #555;
+            margin-top: 4px;
+        }
+
+        .card.secret { border-color: #3d2a00; }
+        .card.secret .slug { color: #f59e0b; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            text-align: left;
+            padding: 8px 12px;
+            color: #444;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #1e1e1e;
+        }
+
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #161616;
+            vertical-align: top;
+        }
+
+        tr:hover td { background: #141414; }
+
+        .badge-first {
+            display: inline-block;
+            background: #1e3a2e;
+            color: #4ade80;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            letter-spacing: 1px;
+        }
+
+        .badge-repeat {
+            display: inline-block;
+            background: #1e1e1e;
+            color: #555;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .ip { color: #888; }
+        .ua { color: #3a3a3a; font-size: 11px; }
+        .ts { color: #555; white-space: nowrap; }
+        .page-slug { color: #4ade80; }
+    </style>
+</head>
+<body>
+
+<h1>// ARG — Панель мониторинга</h1>
+
+<h2>Страницы</h2>
+<div class="cards">
+    {% for p in pages %}
+    <div class="card {% if p.is_secret %}secret{% endif %}">
+        <div class="label">/doc/</div>
+        <div class="slug">{{ p.slug }}</div>
+        <div class="num">{{ p.total_scans }}</div>
+        <div class="sub">{{ p.unique_visitors }} уник. посетителей</div>
+        {% if p.is_secret %}<div class="sub" style="color:#f59e0b;margin-top:4px;">⚑ SECRET</div>{% endif %}
+    </div>
+    {% empty %}
+    <p style="color:#444">Страниц пока нет. Добавь через <a href="/admin/" style="color:#4ade80">/admin/</a></p>
+    {% endfor %}
+</div>
+
+<h2>Последние 100 сканирований</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Время</th>
+            <th>Страница</th>
+            <th>IP</th>
+            <th>Статус</th>
+            <th>User-Agent</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for scan in recent_scans %}
+        <tr>
+            <td class="ts">{{ scan.timestamp|date:"d.m.Y H:i:s" }}</td>
+            <td class="page-slug">/{{ scan.page.slug }}</td>
+            <td class="ip">{{ scan.ip_address }}</td>
+            <td>
+                {% if scan.is_first_visit %}
+                <span class="badge-first">ПЕРВЫЙ</span>
+                {% else %}
+                <span class="badge-repeat">повтор</span>
+                {% endif %}
+            </td>
+            <td class="ua">{{ scan.user_agent|truncatechars:80 }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" style="color:#444;padding:20px">Сканирований ещё не было</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

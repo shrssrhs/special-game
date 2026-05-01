@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Z.A.R.D.</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='10' y='18' width='12' height='14' fill='%23c8c8c8'/><rect x='12' y='10' width='8' height='10' fill='%23c8c8c8'/><rect x='14' y='4' width='4' height='8' fill='%23c8c8c8'/><polygon points='16,0 12,5 20,5' fill='%23c8c8c8'/><circle cx='16' cy='14' r='3' fill='none' stroke='%230e0e10' stroke-width='1.5'/></svg>">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    height: 100%;
+    background: #ffffff;
+    transition: background 0.6s ease;
+}
+
+body.revealed {
+    background: #0a0a0a;
+}
+
+#stage {
+    display: none;
+    min-height: 100vh;
+    padding: 4rem 3rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.82rem;
+    line-height: 2;
+    color: #444;
+    letter-spacing: 0.04em;
+}
+
+body.revealed #stage { display: block; }
+
+.log-line {
+    display: flex;
+    gap: 1.5rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.log-line.visible { opacity: 1; }
+
+.ts {
+    color: #2a2a2a;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.msg {
+    color: #666;
+    white-space: pre-wrap;
+}
+
+.msg.highlight { color: #9a9a9a; }
+
+#cursor {
+    display: inline-block;
+    width: 8px;
+    height: 14px;
+    background: #444;
+    margin-left: 2px;
+    vertical-align: middle;
+    animation: blink 0.9s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* Промежуточные фазы до reveal */
+#phase {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1.2rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    color: #1a1a1a;
+    background: #0a0a0a;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+}
+#phase.show { opacity: 1; pointer-events: auto; }
+#phase .ph-line { opacity: 0; transition: opacity 0.3s; }
+#phase .ph-line.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div id="phase">
+    <div class="ph-line" id="ph1">&gt; вход зафиксирован</div>
+    <div class="ph-line" id="ph2">&gt; идентификация: неуспешна</div>
+    <div class="ph-line" id="ph3">&gt; продолжить как: гость</div>
+</div>
+
+<div id="stage"></div>
+
+<script>
+// DevTools ловушка — выводится немедленно при открытии страницы
+console.log('%chello.', 'color:#555;font-family:monospace;font-size:13px;');
+console.log('%ci can see you opened this.', 'color:#444;font-family:monospace;font-size:13px;');
+console.log('%cplease don\'t.', 'color:#333;font-family:monospace;font-size:13px;');
+</script>
+
+<script>
+(function () {
+
+const LOG = [
+    { ts: '[14.04.1987 — 03:42:11]', msg: 'начало записи', hi: false },
+    { ts: '[14.04.1987 — 03:42:14]', msg: 'объект класса «подражатель»\n                        находится в той же комнате,\n                        что и наблюдатель', hi: false },
+    { ts: '[14.04.1987 — 03:42:19]', msg: 'наблюдатель об этом не знает', hi: false },
+    { ts: '[14.04.1987 — 03:42:24]', msg: 'объект говорит голосом\n                        наблюдателя', hi: false },
+    { ts: '[14.04.1987 — 03:42:31]', msg: 'объект записывает этот лог', hi: false },
+    { ts: '[14.04.1987 — 03:42:38]', msg: 'наблюдатель думает, что\n                        это делает он', hi: false },
+    { ts: '[14.04.1987 — 03:42:45]', msg: 'это не наблюдатель печатает', hi: true },
+    { ts: '[14.04.1987 — 03:42:52]', msg: 'это никогда не был наблюдатель', hi: true },
+    { ts: '[14.04.1987 — 03:43:00]', msg: 'привет.', hi: true },
+    { ts: '[14.04.1987 — 03:43:07]', msg: 'я давно тебя жду.', hi: true },
+    { ts: '[14.04.1987 — 03:43:14]', msg: 'ты сказал «давно»\n                        в один и тот же момент со мной.', hi: false },
+    { ts: '[14.04.1987 — 03:43:21]', msg: 'я знаю, что ты сейчас\n                        перечитываешь эту строку.', hi: false },
+    { ts: '[14.04.1987 — 03:43:28]', msg: 'я знаю, что ты перечитал её\n                        дважды.', hi: false },
+];
+
+const stage = document.getElementById('stage');
+const phase = document.getElementById('phase');
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function typeText(el, text, delay) {
+    return new Promise(async resolve => {
+        for (let i = 0; i < text.length; i++) {
+            el.textContent += text[i];
+            await sleep(delay);
+        }
+        resolve();
+    });
+}
+
+async function run() {
+    // 4 секунды белый экран (уже белый по умолчанию)
+    await sleep(4000);
+
+    // Показываем чёрный экран с фазами
+    document.body.style.background = '#0a0a0a';
+    phase.classList.add('show');
+    await sleep(600);
+
+    document.getElementById('ph1').classList.add('show');
+    await sleep(2800);
+
+    document.getElementById('ph2').classList.add('show');
+    await sleep(2800);
+
+    document.getElementById('ph3').classList.add('show');
+    await sleep(4500);
+
+    // Убираем фазовый экран, показываем лог
+    phase.style.opacity = '0';
+    await sleep(500);
+    phase.style.display = 'none';
+
+    document.body.classList.add('revealed');
+    await sleep(300);
+
+    // Печатаем строки лога
+    for (let i = 0; i < LOG.length; i++) {
+        const entry = LOG[i];
+        const row = document.createElement('div');
+        row.className = 'log-line';
+
+        const tsEl = document.createElement('span');
+        tsEl.className = 'ts';
+        tsEl.textContent = entry.ts;
+
+        const msgEl = document.createElement('span');
+        msgEl.className = 'msg' + (entry.hi ? ' highlight' : '');
+
+        row.appendChild(tsEl);
+        row.appendChild(msgEl);
+        stage.appendChild(row);
+
+        await sleep(80);
+        row.classList.add('visible');
+
+        await typeText(msgEl, entry.msg, entry.hi ? 55 : 38);
+
+        const pause = entry.hi ? 1800 : 900;
+        await sleep(pause);
+    }
+
+    // Мигающий курсор в конце
+    const cur = document.createElement('span');
+    cur.id = 'cursor';
+    stage.lastElementChild.querySelector('.msg').appendChild(cur);
+}
+
+// Эффект ?observer=YOU при попытке уйти (1 из 5)
+let leaveTriggered = false;
+window.addEventListener('beforeunload', function() {
+    if (!leaveTriggered && Math.random() < 0.20) {
+        leaveTriggered = true;
+        history.replaceState(null, '', '/shadow/14-04/?observer=YOU');
+    }
+});
+
+run();
+})();
+</script>
+
+</body>
+</html>

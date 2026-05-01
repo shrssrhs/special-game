@@ -1,0 +1,66 @@
+{% extends "arg/base.html" %}
+{% block title %}CASES // Z.A.R.D.{% endblock %}
+
+{% block content %}
+
+<h1>// Полевые отчёты</h1>
+<p class="section-note">Раздел содержит донесения действующих и бывших полевых агентов. Большинство записей прекращены по причинам, не подлежащим разглашению.</p>
+
+<hr class="divider">
+
+{% for report in reports %}
+<div class="report-block">
+    <div class="report-header">
+        <span class="report-agent">{{ report.agent }}</span>
+        <span class="report-sep">//</span>
+        <span class="report-date">{{ report.date }}</span>
+        <span class="report-sep">//</span>
+        <span class="report-status status-{{ report.status_cls }}">{{ report.status }}</span>
+    </div>
+    <div class="report-body">
+        {{ report.content|safe }}
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
+
+{% block extra_css %}
+.section-note {
+    font-family: var(--tech);
+    font-size: 0.7rem;
+    color: var(--dim);
+    letter-spacing: 0.04em;
+}
+
+.report-block {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border);
+}
+.report-block:last-child { border-bottom: none; }
+
+.report-header {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.report-agent { color: var(--text); }
+.report-sep   { color: var(--border); }
+.status-offline { color: var(--dead); text-decoration: line-through; }
+.status-active  { color: #4a8a4a; }
+
+.report-body {
+    font-family: var(--serif);
+    font-size: 1rem;
+    line-height: 1.85;
+}
+.report-body p { margin-bottom: 0.9rem; }
+{% endblock %}

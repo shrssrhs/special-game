@@ -1,0 +1,96 @@
+{% extends "arg/base.html" %}
+{% block title %}ABOUT // Z.A.R.D.{% endblock %}
+
+{% block content %}
+
+<h1>// О департаменте</h1>
+<hr class="divider">
+
+<div class="about-body">
+
+<p>Zateland Anomaly Research Department — независимая исследовательская структура, осуществляющая документирование, классификацию и архивирование аномальных событий на территории и в окрестностях города Зателанд.</p>
+
+<p>Департамент основан в <span class="redacted-inline">████</span> году по результатам первичной экспертизы ряда инцидентов, признанных не поддающимися объяснению в рамках стандартных процедур.</p>
+
+<p>Деятельность носит исключительно документальный характер. Департамент не осуществляет оперативного вмешательства.</p>
+
+<hr class="divider">
+
+<div class="about-contacts">
+    <div class="contact-row">
+        <span class="contact-key">Адрес</span>
+        <span class="contact-val">
+            <a href="https://maps.google.com/?q=0.000000,0.000000" target="_blank" rel="noopener" class="location-link">г. Зателанд, ул. Архивная, 1</a>
+        </span>
+    </div>
+    <div class="contact-row">
+        <span class="contact-key">Режим работы</span>
+        <span class="contact-val">Постоянно</span>
+    </div>
+    <div class="contact-row">
+        <span class="contact-key">Год основания</span>
+        <span class="contact-val"><span class="redacted-inline">████</span></span>
+    </div>
+    <div class="contact-row">
+        <span class="contact-key">Руководство</span>
+        <span class="contact-val"><span class="redacted-inline">████████████████</span></span>
+    </div>
+    <div class="contact-row">
+        <span class="contact-key">Финансирование</span>
+        <span class="contact-val"><span class="redacted-inline">████████████████████████████</span></span>
+    </div>
+</div>
+
+<hr class="divider">
+
+<p class="about-footer-note">Публичный терминал предназначен исключительно для ознакомления с материалами открытого доступа. По вопросам сотрудничества — <a href="/contact/">форма обратной связи</a>.</p>
+
+<p class="about-footer-note">Если вы оказались здесь случайно — это нормально. Большинство так говорят.</p>
+
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+.about-body {
+    font-family: var(--serif);
+    font-size: 1rem;
+    line-height: 1.85;
+    max-width: 640px;
+}
+
+.about-contacts {
+    margin: 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.contact-row {
+    display: flex;
+    gap: 2rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+}
+
+.contact-key {
+    color: var(--dim);
+    min-width: 140px;
+    flex-shrink: 0;
+}
+
+.contact-val { color: var(--text); }
+
+.location-link {
+    color: var(--link);
+    cursor: text;
+}
+.location-link:hover { text-decoration: underline; }
+
+.about-footer-note {
+    font-size: 0.9rem;
+    color: var(--dim);
+    margin-bottom: 0.6rem;
+}
+{% endblock %}

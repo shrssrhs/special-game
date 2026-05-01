@@ -1,0 +1,114 @@
+{% extends "arg/base.html" %}
+{% block title %}PROTOCOLS // Z.A.R.D.{% endblock %}
+
+{% block content %}
+
+<!--
+  он научился отвечать раньше, чем мы спросили.
+  ключ: tower-without-numbers
+-->
+
+<h1>// Протоколы взаимодействия</h1>
+<p class="section-note">Внутренние инструкции для сотрудников департамента. Публикуются в ограниченном объёме.</p>
+
+<hr class="divider">
+
+<div class="protocol-block">
+    <div class="proto-id">ПРОТОКОЛ 1-А</div>
+    <div class="proto-title">Первичная идентификация объекта</div>
+    <div class="proto-body">
+        <p>1. При обнаружении объекта — немедленно зафиксировать время, координаты, количество свидетелей.</p>
+        <p>2. Не сообщать объекту о факте наблюдения.</p>
+        <p>3. Не называть объекту своего настоящего имени.</p>
+        <p>4. Если объект назвал ваше имя первым — немедленно покинуть локацию.<br>
+           <span class="proto-warn">Не уточнять, откуда он его знает.</span></p>
+        <p>5. Составить донесение не позднее чем через 6 часов после контакта.<br>
+           Если донесение уже составлено до вашего возвращения — обратиться в отдел Б.</p>
+    </div>
+</div>
+
+<div class="protocol-block">
+    <div class="proto-id">ПРОТОКОЛ 2-В</div>
+    <div class="proto-title">Действия при дублировании записей</div>
+    <div class="proto-body">
+        <p>1. При обнаружении двух идентичных записей об одном событии — сохранить обе.</p>
+        <p>2. Не уничтожать ни одну из копий до завершения верификации.</p>
+        <p>3. Верификацию проводит исключительно сотрудник, не участвовавший в составлении ни одной из записей.</p>
+        <p>4. Если верифицирующий сотрудник сообщает, что обе записи составил он — <span class="redacted-inline">██████████████████</span></p>
+    </div>
+</div>
+
+<div class="protocol-block">
+    <div class="proto-id">ПРОТОКОЛ 4-Б</div>
+    <div class="proto-title">Действия при обнаружении объекта класса «Подражатель»</div>
+    <div class="proto-body">
+        <p>1. Не вступать в визуальный контакт более 3 секунд.</p>
+        <p>2. Не оборачиваться повторно после первого контакта.</p>
+        <p>3. При попытке объекта имитировать знакомое лицо —<br>
+           задать контрольный вопрос (см. Приложение В).</p>
+        <p>4. Не задавать контрольный вопрос дважды.<br>
+           <span class="proto-warn">Объект учится.</span></p>
+        <p>5. После контакта немедленно сверить с коллегой наличие у себя всех личных документов.<br>
+           Коллегой должен быть человек, которого вы знаете не менее пяти лет.</p>
+        <p class="redacted-block">████████████████████████████████████████████████████████</p>
+        <p><em>Приложение В изъято из публичного доступа.</em></p>
+    </div>
+</div>
+
+<div class="protocol-block">
+    <div class="proto-id">ПРОТОКОЛ 7</div>
+    <div class="proto-title">Завершение наблюдения</div>
+    <div class="proto-body">
+        <p>1. Считать наблюдение завершённым только при наличии подписи двух независимых наблюдателей.</p>
+        <p>2. Если наблюдатель не может подтвердить завершение — наблюдение не считается завершённым.</p>
+        <p>3. Если наблюдатель не может быть найден — <span class="redacted-inline">████████████████</span></p>
+        <p>4. Если наблюдатель был найден, но не является собой — см. Протокол 4-Б.</p>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+.section-note {
+    font-family: var(--tech);
+    font-size: 0.7rem;
+    color: var(--dim);
+    letter-spacing: 0.04em;
+}
+
+.protocol-block {
+    margin-bottom: 2.8rem;
+    padding-bottom: 2.8rem;
+    border-bottom: 1px solid var(--border);
+}
+.protocol-block:last-child { border-bottom: none; }
+
+.proto-id {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
+
+.proto-title {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--text);
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.05em;
+}
+
+.proto-body {
+    font-family: var(--serif);
+    font-size: 1rem;
+    line-height: 1.85;
+}
+.proto-body p { margin-bottom: 0.85rem; }
+
+.proto-warn {
+    color: var(--accent);
+    font-style: italic;
+}
+{% endblock %}

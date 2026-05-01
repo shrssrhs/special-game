@@ -1,0 +1,174 @@
+{% extends "arg/base.html" %}
+{% block title %}CONTACT // Z.A.R.D.{% endblock %}
+
+{% block content %}
+
+<!--
+  если в поле "тема" ввести: "ты меня слышишь"
+  система ответит. но это будет не система.
+-->
+
+<h1>// Обратная связь</h1>
+<p class="section-note">Запросы обрабатываются вручную. Среднее время ответа — 4–6 рабочих недель.</p>
+
+<hr class="divider">
+
+<form id="contact-form" autocomplete="off">
+    {% csrf_token %}
+
+    <div class="field-group">
+        <label class="field-label" for="subject">ТЕМА ОБРАЩЕНИЯ</label>
+        <input type="text" id="subject" name="subject" class="field-input" maxlength="400" spellcheck="false">
+    </div>
+
+    <div class="field-group">
+        <label class="field-label" for="message">ТЕКСТ</label>
+        <textarea id="message" name="message" class="field-input field-textarea" rows="6" spellcheck="false"></textarea>
+    </div>
+
+    <div class="field-group">
+        <label class="field-label" for="agent_id">
+            ИДЕНТИФИКАТОР АГЕНТА
+            <span class="field-sublabel">— если применимо</span>
+        </label>
+        <input type="text" id="agent_id" name="agent_id" class="field-input field-narrow" maxlength="200" spellcheck="false" autocomplete="off">
+    </div>
+
+    <button type="submit" class="submit-btn" id="submit-btn">[ОТПРАВИТЬ ЗАПРОС]</button>
+</form>
+
+<div id="response-box" class="response-box" style="display:none;"></div>
+
+{% endblock %}
+
+{% block extra_css %}
+.section-note {
+    font-family: var(--tech);
+    font-size: 0.7rem;
+    color: var(--dim);
+    letter-spacing: 0.04em;
+}
+
+.field-group {
+    margin-bottom: 1.8rem;
+}
+
+.field-label {
+    display: block;
+    font-family: var(--tech);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.field-sublabel {
+    color: var(--dead);
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+}
+
+.field-input {
+    display: block;
+    width: 100%;
+    max-width: 520px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    padding: 0.4rem 0;
+    outline: none;
+    letter-spacing: 0.04em;
+    transition: border-color 0.15s;
+    caret-color: var(--link);
+    cursor: text;
+}
+.field-input:focus { border-bottom-color: var(--link); }
+
+.field-textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
+.field-narrow   { max-width: 260px; }
+
+.submit-btn {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    color: var(--link);
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 0.55rem 1.2rem;
+    cursor: text;
+    margin-top: 0.5rem;
+}
+.submit-btn:hover { border-color: var(--link); color: var(--text); }
+.submit-btn:disabled { color: var(--dead); border-color: var(--border); cursor: default; }
+
+.response-box {
+    margin-top: 2rem;
+    padding: 1.4rem 1.6rem;
+    border: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.9;
+    color: var(--text);
+    white-space: pre-wrap;
+    letter-spacing: 0.03em;
+    max-width: 520px;
+}
+
+.response-box.special {
+    border-color: var(--accent);
+    color: var(--dim);
+}
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('contact-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    const box = document.getElementById('response-box');
+    btn.disabled = true;
+    btn.textContent = '[ОТПРАВКА...]';
+
+    const data = new FormData(this);
+
+    try {
+        const res = await fetch('/contact/', {
+            method: 'POST',
+            body: data,
+            headers: { 'X-CSRFToken': data.get('csrfmiddlewaretoken') }
+        });
+        const json = await res.json();
+
+        box.style.display = 'block';
+        box.textContent = '';
+        box.className = 'response-box' + (json.response.includes('СБОЙ') ? ' special' : '');
+
+        // Печатаем ответ посимвольно
+        let i = 0;
+        const text = json.response;
+        function typeNext() {
+            if (i < text.length) {
+                box.textContent += text[i++];
+                setTimeout(typeNext, i < 30 ? 0 : 18);
+            } else {
+                // Если разблокирован раздел — перезагрузить навигацию
+                if (json.unlock) {
+                    setTimeout(() => location.reload(), 1200);
+                }
+            }
+        }
+        typeNext();
+
+    } catch(err) {
+        box.style.display = 'block';
+        box.textContent = 'Ошибка передачи. Попробуйте позже.';
+    }
+
+    btn.textContent = '[ЗАПРОС ОТПРАВЛЕН]';
+});
+</script>
+{% endblock %}

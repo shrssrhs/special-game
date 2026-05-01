@@ -1,0 +1,111 @@
+{% extends "arg/base.html" %}
+
+{% block title %}Z.A.R.D. — Zateland Anomaly Research Department / Public Access Terminal{% endblock %}
+
+{% block content %}
+
+<!--
+  ЗАМЕТКА ДЛЯ ВЕБМАСТЕРА:
+  Если терминал начнёт показывать страницы,
+  которых нет в маршрутизаторе — не трогай их.
+  Они там не для нас.
+
+  — М.
+-->
+
+<div class="index-wrap">
+    <div class="index-label">ZATELAND ANOMALY RESEARCH DEPARTMENT</div>
+    <div class="index-sub">Публичный архивный терминал</div>
+    <hr class="divider">
+
+    <table class="index-stats">
+        <tr>
+            <td class="stat-key">Версия терминала</td>
+            <td class="stat-val">4.7.2</td>
+        </tr>
+        <tr>
+            <td class="stat-key">Последнее обновление</td>
+            <td class="stat-val">11.04.1987</td>
+        </tr>
+        <tr>
+            <td class="stat-key">Записей в базе</td>
+            <td class="stat-val">2&nbsp;847</td>
+        </tr>
+        <tr>
+            <td class="stat-key">Доступно публично</td>
+            <td class="stat-val">14</td>
+        </tr>
+    </table>
+
+    <div class="index-enter">
+        <a href="/archive/" class="enter-btn">[ВХОД В АРХИВ]</a>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+.index-wrap {
+    margin-top: 4rem;
+}
+
+.index-label {
+    font-family: var(--mono);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+}
+
+.index-sub {
+    font-family: var(--tech);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+    margin-bottom: 2rem;
+}
+
+.index-stats {
+    border-collapse: collapse;
+    margin-bottom: 2.5rem;
+}
+
+.index-stats td {
+    padding: 0.25rem 0;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+}
+
+.stat-key {
+    color: var(--dim);
+    letter-spacing: 0.05em;
+    padding-right: 3rem;
+}
+
+.stat-val {
+    color: var(--text);
+    letter-spacing: 0.08em;
+}
+
+.index-enter {
+    margin-top: 3rem;
+}
+
+.enter-btn {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    color: var(--link);
+    border: 1px solid var(--border);
+    padding: 0.6rem 1.4rem;
+    display: inline-block;
+    cursor: text;
+}
+.enter-btn:hover {
+    border-color: var(--link);
+    text-decoration: none;
+    color: var(--text);
+}
+{% endblock %}

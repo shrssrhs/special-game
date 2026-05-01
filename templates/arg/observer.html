@@ -1,0 +1,51 @@
+{% extends "arg/base.html" %}
+{% block title %}OBSERVER // Z.A.R.D.{% endblock %}
+
+{% block content %}
+
+<div class="observer-wrap">
+    <div class="observer-label">OBSERVER</div>
+    <hr class="divider">
+    <p class="observer-text">Этот раздел зарезервирован за тобой.</p>
+    <p class="observer-text">Когда будешь готов — он начнёт записывать.</p>
+    <div class="observer-cursor">█</div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+.observer-wrap {
+    margin-top: 5rem;
+    max-width: 480px;
+}
+
+.observer-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--dead);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+}
+
+.observer-text {
+    font-family: var(--serif);
+    font-size: 1rem;
+    color: var(--dim);
+    line-height: 1.85;
+    margin-bottom: 0.5rem;
+}
+
+.observer-cursor {
+    font-family: var(--mono);
+    color: var(--dead);
+    margin-top: 2rem;
+    font-size: 1rem;
+    animation: blink 1.2s step-end infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+}
+{% endblock %}

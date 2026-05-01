@@ -1,0 +1,43 @@
+{% extends "arg/base.html" %}
+{% block title %}[ОФФЛАЙН] // Z.A.R.D.{% endblock %}
+
+{% block content %}
+
+<div class="locked-wrap">
+    <div class="locked-label">{{ section }} // ДОСТУП ЗАКРЫТ</div>
+    <hr class="divider">
+    <p class="locked-text">Раздел заблокирован. Доступ открывается после прохождения Акта {{ act }} в игре.</p>
+    <p class="locked-text">Введи код агента на странице <a href="/contact/">обратной связи</a>.</p>
+    <div class="locked-cursor">_</div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+.locked-wrap { margin-top: 5rem; max-width: 480px; }
+
+.locked-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--dead);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+}
+
+.locked-text {
+    font-family: var(--serif);
+    font-size: 1rem;
+    color: var(--dim);
+    line-height: 1.85;
+    margin-bottom: 0.5rem;
+}
+
+.locked-cursor {
+    font-family: var(--mono);
+    color: var(--dead);
+    margin-top: 2rem;
+    animation: blink 1.2s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+{% endblock %}
